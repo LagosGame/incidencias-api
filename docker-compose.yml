@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-incidencias
+    environment:
+      POSTGRES_DB: incidencias_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 6272
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  incidencias-api:
+    image: incidencias-api:latest
+    container_name: incidencias-api
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/incidencias_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 6272
+      SPRING_DATA_REDIS_HOST: host.docker.internal
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
